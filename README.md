@@ -25,8 +25,6 @@ Sebagai bagian dari tugas besar mata kuliah IoT, proyek ini berfokus pada pemant
 
 ## 🗂️ Diagram Sistem Blok
 
-Sensor dan ESP32 → WiFi → Platform Cloud (ThingSpeak) → Visualisasi (Grafana) → Pengguna (akses data)
-
 ![Diagram Sistem Blok](images/diagram-sistem-blok.png) 
 
 Lokasi : images/diagram-sistem-blok.png
