@@ -27,7 +27,9 @@ Sebagai bagian dari tugas akhir mata kuliah IoT, proyek ini berfokus pada pemant
 
 Sensor dan ESP32 → WiFi → Platform Cloud (ThingSpeak) → Visualisasi (Grafana) → Pengguna (akses data)
 
-![Diagram Sistem Blok](images/diagram-sistem-blok.png)
+![Diagram Sistem Blok](images/diagram-sistem-blok.png) 
+
+Lokasi : images/diagram-sistem-blok.png
 
 ## Lisensi
 
