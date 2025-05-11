@@ -1,6 +1,6 @@
 # air-quality-monitoring-system
 
-Sebagai bagian dari tugas akhir mata kuliah IoT, proyek ini berfokus pada pemantauan kualitas udara menggunakan teknologi sensor. Data yang dikumpulkan akan dikirim ke cloud agar dapat diakses secara online. Proyek ini mendasari tujuan pembangunan berkelanjutan, yaitu SDG 11: **Sustainable Cities and Communities.**
+Sebagai bagian dari tugas besar mata kuliah IoT, proyek ini berfokus pada pemantauan kualitas udara menggunakan teknologi sensor. Data yang dikumpulkan akan dikirim ke cloud agar dapat diakses secara online. Proyek ini mendasari tujuan pembangunan berkelanjutan, yaitu SDG 11: **Sustainable Cities and Communities.**
 
 ## 🔄 Tujuan Proyek
 
@@ -11,7 +11,7 @@ Sebagai bagian dari tugas akhir mata kuliah IoT, proyek ini berfokus pada pemant
 
 ## 🧰 Komponen yang Digunakan
 
-| Komponen     | Kegunaan                                                  |
+| Komponen     | Fungsi                                                  |
 |--------------|-----------------------------------------------------------|
 | ESP32        | Unit mikrokontroler utama + WiFi                          |
 | MQ135        | Sensor untuk mendeteksi kualitas udara                    |
