@@ -23,7 +23,7 @@ Sebagai bagian dari tugas besar mata kuliah IoT, proyek ini berfokus pada pemant
 | ThingSpeak   | Platform penyimpanan dan pengiriman data berbasis cloud   |
 | Grafana      | Alat untuk visualisasi data dalam bentuk grafik           |
 
-## 🗂️ Diagram Sistem Blok
+## 🗂️ Diagram Blok Sistem
 
 ![Diagram Sistem Blok](images/diagram-sistem-blok.png) 
 
