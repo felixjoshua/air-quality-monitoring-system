@@ -1,6 +1,6 @@
 # Desain Hardware (Wokwi)
 
-![Desain Hardware](Wokwi.jpg)
+![Desain Hardware](../../images/Wokwi.jpg)
 
 **Keterangan**: Wokwi tidak memiliki komponen MQ-135, sehingga diganti oleh chip breakout yang penamaannya bisa diatur.
 
@@ -10,16 +10,16 @@
 
 ## Tampilan Awal
 
-![Tampilan Awal](TampilanAwal.jpeg)
+![Tampilan Awal](../../images/TampilanAwal.jpeg)
 
 ---
 
 ## Notifikasi
 
-![Notifikasi](Notifikasi.jpeg)
+![Notifikasi](../../images/Notifikasi.jpeg)
 
 ---
 
 ## Info Aplikasi
 
-![Info Aplikasi](Info.jpeg)
+![Info Aplikasi](../../images/Info.jpeg)
