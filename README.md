@@ -16,7 +16,7 @@ Sebagai bagian dari tugas besar mata kuliah IoT, proyek ini berfokus pada pemant
 | ESP32        | Unit mikrokontroler utama + WiFi                          |
 | MQ135        | Sensor untuk mendeteksi kualitas udara                    |
 | DHT22        | Sensor suhu dan kelembaban                                |
-| OLED Display (opsional) | Tampilan langsung di perangkat                 |
+| LCD (opsional) | Tampilan langsung di perangkat                 |
 | 3 LED (opsional) | Indikator visual untuk status udara                   |
 | Breadboard   | Media perakitan sirkuit sementara                         |
 | Kabel Jumper | Penghubung antar komponen                                 |
@@ -25,9 +25,9 @@ Sebagai bagian dari tugas besar mata kuliah IoT, proyek ini berfokus pada pemant
 
 ## 🗂️ Diagram Blok Sistem
 
-![Diagram Sistem Blok](images/diagram-sistem-blok.png) 
+![Diagram Sistem Blok](images/FlowchartIOT.png) 
 
-Lokasi : images/diagram-sistem-blok.png
+Lokasi : images/FlowchartIOT.png
 
 ## Lisensi
 
