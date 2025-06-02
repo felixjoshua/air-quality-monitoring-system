@@ -21,9 +21,9 @@ Sebagai bagian dari tugas besar mata kuliah IoT, proyek ini berfokus pada pemant
 | Breadboard   | Media perakitan sirkuit sementara                         |
 | Kabel Jumper | Penghubung antar komponen                                 |
 | ThingSpeak   | Platform penyimpanan dan pengiriman data berbasis cloud   |
-| Grafana      | Alat untuk visualisasi data dalam bentuk grafik           |
+| Blynk      | Alat untuk visualisasi data dalam bentuk grafik           |
 
-## 🗂️ Diagram Blok Sistem
+## 🗂️ Diagram Blok Sistem (Flowchart)
 
 ![Diagram Sistem Blok](images/FlowchartIOT.png) 
 
