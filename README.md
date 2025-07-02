@@ -16,6 +16,7 @@ Sebagai bagian dari tugas besar mata kuliah IoT, proyek ini berfokus pada pemant
 | ESP32        | Unit mikrokontroler utama + WiFi                          |
 | MQ135        | Sensor untuk mendeteksi kualitas udara                    |
 | DHT22        | Sensor suhu dan kelembaban                                |
+| Potensiometer (opsional) | Mengatur tingkat kontras tampilan pada LCD               
 | LCD (opsional) | Tampilan langsung di perangkat                 |
 | 3 LED (opsional) | Indikator visual untuk status udara                   |
 | Breadboard   | Media perakitan sirkuit sementara                         |
