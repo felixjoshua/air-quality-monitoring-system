@@ -1,3 +1,3 @@
 # Implementasi Hardware 
 
-![Implementasi Hardware](../../images/hardware.jpeg)
+![Implementasi Hardware](../../images/hardwareV2.jpeg)
