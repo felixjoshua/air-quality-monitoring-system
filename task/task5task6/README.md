@@ -4,4 +4,4 @@
 
 # Riwayat Kualitas Udara
 
-![Riwayat Kualitas Udara](../../images/Riwayat.jpeg)
+![Riwayat Kualitas Udara](../../images/Riwayat.jpg)
