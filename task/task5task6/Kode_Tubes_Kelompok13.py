@@ -3,6 +3,9 @@ from machine import Pin, ADC
 import dht
 import network
 import urequests
+# --- TAMBAHAN UNTUK LCD ---
+# Pastikan file esp32_lcd.py sudah ada di ESP32 Anda
+from esp32_lcd import GpioLcd 
 
 # --- Konfigurasi ---
 WIFI_SSID = "POCO X6 Pro 5G"
@@ -16,6 +19,25 @@ BLYNK_SERVER = "blynk.cloud"
 
 THINGSPEAK_WRITE_API_KEY = "KSWGUZ6LS92C05EZ"
 THINGSPEAK_API_URL = "https://api.thingspeak.com/update"
+
+# --- TAMBAHAN UNTUK LCD ---
+# Inisialisasi LCD sesuai dengan pin yang Anda gunakan
+# LiquidCrystal(rs, enable, d4, d5, d6, d7)
+try:
+    lcd = GpioLcd(rs_pin=Pin(23),
+                  enable_pin=Pin(22),
+                  d4_pin=Pin(21),
+                  d5_pin=Pin(19),
+                  d6_pin=Pin(18),
+                  d7_pin=Pin(5),
+                  num_lines=2, num_columns=16)
+    print("LCD berhasil diinisialisasi.")
+    lcd.putstr("Air Quality Mon\nSistem Dimulai..") # Pesan Awal
+    time.sleep(2)
+except Exception as e:
+    print(f"Error saat inisialisasi LCD: {e}")
+    lcd = None
+# --- AKHIR TAMBAHAN LCD ---
 
 time.sleep(1)
 
@@ -47,6 +69,11 @@ def connect_wifi(ssid, password, activate_interface=True):
 
     if not wlan.isconnected():
         print("Menghubungkan ke WiFi...")
+        # --- TAMBAHAN UNTUK LCD ---
+        if lcd:
+            lcd.clear()
+            lcd.putstr("Hubungkan WiFi..")
+        # --- AKHIR TAMBAHAN LCD ---
         wlan.connect(ssid, password)
         max_wait = 15
         while not wlan.isconnected() and max_wait > 0:
@@ -58,9 +85,21 @@ def connect_wifi(ssid, password, activate_interface=True):
         if wlan.isconnected():
             print("Terhubung ke WiFi!")
             print(f"Alamat IP: {wlan.ifconfig()[0]}")
+            # --- TAMBAHAN UNTUK LCD ---
+            if lcd:
+                lcd.clear()
+                lcd.putstr("WiFi Terhubung!")
+                lcd.move_to(0, 1) # Pindah ke baris kedua
+                lcd.putstr(wlan.ifconfig()[0])
+            # --- AKHIR TAMBAHAN LCD ---
             time.sleep(0.5)
         else:
             print("Gagal terhubung ke WiFi.")
+            # --- TAMBAHAN UNTUK LCD ---
+            if lcd:
+                lcd.clear()
+                lcd.putstr("WiFi Gagal!")
+            # --- AKHIR TAMBAHAN LCD ---
     return wlan.isconnected()
 
 # ✅ Kirim ke Blynk - per pin
@@ -73,29 +112,16 @@ def send_to_blynk(temp, hum, air_quality):
             return
 
     print("Mengirim data ke Blynk...")
-
     try:
         base_url = f"http://{BLYNK_SERVER}/external/api/update?token={BLYNK_AUTH_TOKEN}"
-
-        url_temp = f"{base_url}&{BLYNK_VPIN_TEMP}={temp}"
-        print("URL V0:", url_temp)
-        res_temp = urequests.get(url_temp, timeout=10)
-        print("✅ Terkirim V0:", res_temp.status_code)
-        res_temp.close()
+        
+        # Kirim data dengan jeda singkat
+        urequests.get(f"{base_url}&{BLYNK_VPIN_TEMP}={temp}", timeout=10).close()
         time.sleep(0.3)
-
-        url_hum = f"{base_url}&{BLYNK_VPIN_HUMIDITY}={hum}"
-        print("URL V1:", url_hum)
-        res_hum = urequests.get(url_hum, timeout=10)
-        print("✅ Terkirim V1:", res_hum.status_code)
-        res_hum.close()
+        urequests.get(f"{base_url}&{BLYNK_VPIN_HUMIDITY}={hum}", timeout=10).close()
         time.sleep(0.3)
-
-        url_air = f"{base_url}&{BLYNK_VPIN_AIR_QUALITY}={air_quality}"
-        print("URL V2:", url_air)
-        res_air = urequests.get(url_air, timeout=10)
-        print("✅ Terkirim V2:", res_air.status_code)
-        res_air.close()
+        urequests.get(f"{base_url}&{BLYNK_VPIN_AIR_QUALITY}={air_quality}", timeout=10).close()
+        print("✅ Data terkirim ke Blynk")
 
     except Exception as e:
         print(f"❌ Error kirim ke Blynk:", e)
@@ -120,85 +146,91 @@ def send_to_thingspeak(temp, hum, air_quality):
 connect_wifi(WIFI_SSID, WIFI_PASSWORD, activate_interface=True)
 time.sleep(2)
 
+# GANTI SELURUH while True: loop Anda dengan yang ini.
+
 while True:
-    suhu = ERROR_VALUE_SENSOR
-    kelembaban = ERROR_VALUE_SENSOR
-    kualitas_udara = ERROR_VALUE_SENSOR
-
     try:
-        if not wlan.isconnected():
-            print("Koneksi WiFi terputus. Mencoba menghubungkan kembali...")
-            connect_wifi(WIFI_SSID, WIFI_PASSWORD, activate_interface=False)
-            if not wlan.isconnected():
-                print("Gagal menghubungkan kembali. Melewati siklus ini.")
-                time.sleep(10)
-                continue
-            else:
-                print("Terhubung kembali ke WiFi.")
-                time.sleep(2)
-
+        # 1. Baca sensor yang tidak konflik terlebih dahulu (DHT22)
+        print("Membaca sensor DHT22...")
         if dht_sensor:
-            try:
-                dht_sensor.measure()
-                suhu = dht_sensor.temperature()
-                kelembaban = dht_sensor.humidity()
-            except Exception as e_dht:
-                print(f"Error membaca DHT22: {e_dht}")
+            dht_sensor.measure()
+            suhu = dht_sensor.temperature()
+            kelembaban = dht_sensor.humidity()
         else:
-            print("Sensor DHT22 tidak diinisialisasi.")
+            suhu = ERROR_VALUE_SENSOR
+            kelembaban = ERROR_VALUE_SENSOR
 
-        wifi_was_active_for_mq135 = False
+        # 2. Tampilkan data pertama ke LCD SEGERA
+        if lcd:
+            lcd.clear()
+            temp_str = f"Suhu: {suhu:.1f}C" if suhu != ERROR_VALUE_SENSOR else "Suhu: Error"
+            lcd.putstr(temp_str)
+            
+            humi_str = f"H:{kelembaban:.0f}%" if kelembaban != ERROR_VALUE_SENSOR else "H:Err"
+            lcd.move_to(16 - len(humi_str), 0) # Taruh di pojok kanan atas
+            lcd.putstr(humi_str)
+
+        # 3. Matikan WiFi untuk membaca sensor yang konflik (MQ135)
+        print("Menonaktifkan WiFi untuk membaca MQ135...")
+        if wlan.isconnected():
+            wlan.disconnect()
+        if wlan.active():
+            wlan.active(False)
+        time.sleep(1) # Beri jeda agar WiFi benar-benar mati
+
+        # Baca sensor MQ135
         if mq_sensor:
-            if wlan.isconnected():
-                print("Menonaktifkan WiFi sementara untuk membaca MQ135...")
-                wlan.disconnect()
-                disconnect_wait = 5
-                while wlan.isconnected() and disconnect_wait > 0:
-                    print("Menunggu WiFi disconnect...")
-                    time.sleep(0.2)
-                    disconnect_wait -= 1
-                if not wlan.isconnected():
-                    print("WiFi berhasil disconnected.")
-                    wlan.active(False)
-                    time.sleep(0.5)
-                    wifi_was_active_for_mq135 = True
-            elif wlan.active():
-                print("WiFi tidak terhubung tapi aktif, menonaktifkan...")
-                wlan.active(False)
-                time.sleep(0.5)
-                wifi_was_active_for_mq135 = True
-
-            try:
-                print("Membaca MQ135...")
-                time.sleep(0.5)
-                kualitas_udara = mq_sensor.read()
-            except Exception as e_mq:
-                print(f"Error membaca MQ135: {e_mq}")
+            kualitas_udara = mq_sensor.read()
         else:
-            print("Sensor MQ135 tidak diinisialisasi.")
+            kualitas_udara = ERROR_VALUE_SENSOR
+        
+        # 4. Update LCD lagi dengan data kualitas udara
+        if lcd:
+            lcd.move_to(0, 1)
+            air_str = f"K.Udara: {kualitas_udara}" if kualitas_udara != ERROR_VALUE_SENSOR else "K.Udara: Error"
+            lcd.putstr(air_str)
+        
+        print(f"Hasil Baca Sensor -> Suhu: {suhu}, Lembab: {kelembaban}, Udara: {kualitas_udara}")
 
-        if wifi_was_active_for_mq135:
-            print("Mengaktifkan kembali WiFi...")
-            if not wlan.active():
-                wlan.active(True)
-                time.sleep(1)
+        # --- PERUBAHAN DI SINI ---
+        # Beri jeda agar data di LCD bisa dibaca dengan nyaman
+        print("Menahan tampilan data di LCD selama 10 detik...")
+        time.sleep(5)
+        # --- AKHIR PERUBAHAN ---
 
-        print(f"Suhu       : {suhu} °C")
-        print(f"Kelembaban : {kelembaban} %")
-        print(f"Kualitas Udara (MQ135): {kualitas_udara}")
-        print("------------------------")
+        # 5. Aktifkan & hubungkan kembali WiFi untuk mengirim data
+        print("Mengaktifkan & menghubungkan kembali WiFi...")
+        connect_wifi(WIFI_SSID, WIFI_PASSWORD, activate_interface=True)
 
-        send_to_blynk(suhu, kelembaban, kualitas_udara)
-        send_to_thingspeak(suhu, kelembaban, kualitas_udara)
+        # 6. Kirim data ke Cloud HANYA JIKA terhubung
+        if wlan.isconnected():
+            print("Koneksi WiFi stabil, mengirim data ke cloud...")
+            if lcd:
+                lcd.move_to(15, 1) # Pojok kanan bawah
+                lcd.putstr(">")    # Indikator: Sedang mengirim
+
+            send_to_blynk(suhu, kelembaban, kualitas_udara)
+            send_to_thingspeak(suhu, kelembaban, kualitas_udara)
+            
+            if lcd:
+                lcd.move_to(15, 1)
+                lcd.putstr("V") # Indikator: Sukses terkirim
+
+        else:
+            print("Tidak terhubung ke WiFi, pengiriman data dilewati.")
+            if lcd:
+                lcd.move_to(15, 1)
+                lcd.putstr("X") # Indikator: Gagal konek
 
     except Exception as e:
-        print(f"Terjadi error tidak terduga: {e}")
-        if not wlan.active():
-            print("Mengaktifkan WiFi karena error...")
-            wlan.active(True)
-            time.sleep(1)
-        if not wlan.isconnected():
-            connect_wifi(WIFI_SSID, WIFI_PASSWORD, activate_interface=False)
-
-    print("Menunggu 5 detik sebelum siklus berikutnya...\n")
-    time.sleep(5)
+        print(f"Terjadi error besar di loop utama: {e}")
+        if lcd:
+            lcd.clear()
+            lcd.putstr("FATAL ERROR")
+            lcd.move_to(0,1)
+            lcd.putstr("Restarting...")
+            
+    # Jeda total sebelum siklus berikutnya dimulai.
+    # Total waktu tunggu = 5 detik (tadi) + 10 detik (sekarang) = 15 detik
+    print("\nSiklus selesai. Menunggu 10 detik...")
+    time.sleep(10)
