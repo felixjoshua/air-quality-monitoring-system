@@ -1,6 +1,6 @@
 # Desain Hardware (Wokwi)
 
-![Desain Hardware](../../images/Wokwi.jpg)
+![Desain Hardware](../../images/WokwiV2.jpg)
 
 **Keterangan**: Wokwi tidak memiliki komponen MQ-135, sehingga diganti oleh chip breakout yang penamaannya bisa diatur.
 
