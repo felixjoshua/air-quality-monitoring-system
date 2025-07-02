@@ -7,7 +7,7 @@ Sebagai bagian dari tugas besar mata kuliah IoT, proyek ini berfokus pada pemant
 - Melakukan pengukuran kualitas udara, suhu, dan kelembaban melalui sensor MQ135 dan DHT22.
 - Memberikan akses informasi kualitas udara secara real-time.
 - Mengirim data hasil pengukuran ke cloud (ThingSpeak) secara otomatis dan berkala.
-- Menyediakan visualisasi data menggunakan platform seperti Grafana.
+- Menyediakan visualisasi data menggunakan platform seperti Blynk.
 
 ## 🧰 Komponen yang Digunakan
 
