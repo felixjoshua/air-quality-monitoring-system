@@ -4,7 +4,7 @@
 
 # Tampilan LCD
 
-#![Tampilan LCD](../../images/LCD.jpeg)
+![Tampilan LCD](../../images/LCD.jpeg)
 
 
 # Riwayat Kualitas Udara
